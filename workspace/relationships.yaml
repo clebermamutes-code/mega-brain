@@ -1,0 +1,4 @@
+# Workspace — relacionamentos entre business units e dominios
+# Single-business spoke: sem operacoes cross-business (hub-governance.md).
+version: 1
+relationships: []

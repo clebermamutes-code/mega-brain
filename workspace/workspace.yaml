@@ -1,0 +1,10 @@
+# Workspace — configuracao raiz
+# Este repositorio serve UMA organizacao como single-business spoke
+# (.claude/rules/hub-governance.md). Preencha com os dados do seu negocio.
+version: 1
+organization:
+  name: ""            # nome da sua organizacao
+  primary_bu: main    # business unit padrao (workspace/businesses/main/)
+defaults:
+  language: pt-BR
+  timezone: America/Sao_Paulo

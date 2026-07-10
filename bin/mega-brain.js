@@ -250,6 +250,32 @@ async function main() {
       break;
     }
 
+    case 'validate': {
+      // Valida a instalacao inteira: preflight + governance + integridade JSON
+      const chalk = (await import('chalk')).default;
+      const preflight = await dispatchOperation('run_preflight');
+      const governance = await dispatchOperation('validate_governance');
+      const jsonIntegrity = await dispatchOperation('validate_json_integrity');
+
+      console.log();
+      console.log(chalk.bold('  Validacao da instalacao'));
+      console.log(chalk.dim('  ' + '─'.repeat(58)));
+      for (const check of preflight.checks || []) {
+        const mark = check.ok ? chalk.green('OK  ') : chalk.yellow('WARN');
+        console.log(`  ${mark} ${check.check.padEnd(28)} ${chalk.dim(check.detail || '')}`);
+      }
+      const hard = governance?.violations?.hard?.length ?? '?';
+      const soft = governance?.violations?.soft?.length ?? '?';
+      const govOk = hard === 0 && soft === 0;
+      console.log(`  ${govOk ? chalk.green('OK  ') : chalk.yellow('WARN')} governance                   ${chalk.dim(`${hard} hard / ${soft} soft violations`)}`);
+      console.log(`  ${jsonIntegrity.ok ? chalk.green('OK  ') : chalk.yellow('WARN')} json-integrity               ${chalk.dim(jsonIntegrity.ok ? 'todos os JSONs validos' : (jsonIntegrity.stderr || jsonIntegrity.output || '').slice(0, 60))}`);
+      console.log();
+      const allOk = preflight.ok && govOk && jsonIntegrity.ok;
+      console.log(allOk ? chalk.green('  Instalacao valida.') : chalk.yellow('  Instalacao com WARNs (nao bloqueantes — ver acima).'));
+      console.log();
+      break;
+    }
+
     // ── Generic operation listing and dispatch ──
     case 'operations': {
       const catFlag = args.indexOf('--category');

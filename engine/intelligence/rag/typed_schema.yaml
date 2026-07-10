@@ -1,0 +1,43 @@
+# Typed Schema — 12 Object Types (F0-13, schema-fonte)
+# Ordered top-down: the L1→L5 generative chain first (ontology hierarchy),
+# then the L6-L10 MCE types, then the structural types (pessoa, dominio).
+version: 1
+object_types:
+  - name: filosofia
+    layer: L1
+    description: Crencas nucleares e visao de mundo
+  - name: modelo_mental
+    layer: L2
+    description: Frameworks de pensamento e decisao
+  - name: heuristica
+    layer: L3
+    description: Regras praticas e atalhos de decisao
+  - name: framework
+    layer: L4
+    description: Metodologias e processos estruturados
+  - name: metodologia
+    layer: L5
+    description: Implementacoes passo a passo
+  - name: behavioral_pattern
+    layer: L6
+    description: Padroes comportamentais e gatilhos
+  - name: value
+    layer: L7
+    description: Hierarquia de valores e prioridades
+  - name: voice_trait
+    layer: L8
+    description: DNA de voz, frases-assinatura, estados
+  - name: obsession
+    layer: L9
+    description: Obsessoes recorrentes e prioridades cognitivas
+  - name: paradox
+    layer: L10
+    description: Paradoxos internos e contradicoes produtivas
+  - name: pessoa
+    description: Entidade pessoa (especialista, membro, autor)
+  - name: dominio
+    description: Dominio tematico de conhecimento
+relationship_types:
+  downward: [GERA, PRODUZ, MATERIALIZA, IMPLEMENTA]
+  cross: [RELACIONADA_COM]
+  structural: [TEM, PERTENCE_A, CONTEM]

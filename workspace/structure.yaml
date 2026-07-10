@@ -1,0 +1,19 @@
+# Workspace — hierarquia de camadas L0-L4 (Constitution Art. XIV)
+# Golden Rule: L0 > L1 > L2 > L3 > L4 (camadas superiores prevalecem).
+version: 1
+layers:
+  L0-identity:
+    ttl_days: 365
+    description: DNA da empresa, legal, founder
+  L1-strategy:
+    ttl_days: 90
+    description: ICP, BMC, pricing, offerbook
+  L2-tactical:
+    ttl_days: 60
+    description: marca, campanhas, aceleracao
+  L3-product:
+    ttl_days: 30
+    description: specs de produto, roadmaps
+  L4-operational:
+    ttl_days: 7
+    description: operacao dia a dia

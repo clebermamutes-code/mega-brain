@@ -19,6 +19,8 @@ token.json
 # --- Runtime data / RAG indexes (per-user, not template) ---
 .data/
 processing/
+knowledge/personal/index/
+knowledge/external/dna/domains/*/AGG-*.yaml
 inbox/*
 !inbox/.gitkeep
 !inbox/README.md
