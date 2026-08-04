@@ -30,6 +30,7 @@ from engine.intelligence.youtube_cloner import (
     dna as dna_stage,
     edit_manifest,
     guardrails,
+    profiles,
     script as script_stage,
     transcripts as transcripts_stage,
     visuals,
@@ -138,14 +139,23 @@ def cmd_script(args: argparse.Namespace) -> int:
             if l.strip()
         ]
 
-    draft = script_stage.generate_script(
-        dna,
-        args.topic,
-        language=args.language,
-        duration_minutes=args.duration,
-        dossier=dossier,
-        provider=args.provider,
-    )
+    profile = profiles.load(args.profile) if args.profile else None
+    if profile:
+        print(f"Perfil de nicho: {profile.name}")
+
+    try:
+        draft = script_stage.generate_script(
+            dna,
+            args.topic,
+            language=args.language,
+            duration_minutes=args.duration,
+            dossier=dossier,
+            profile=profile,
+            provider=args.provider,
+        )
+    except script_stage.DossierRequired as exc:
+        print(f"\nBLOQUEADO: {exc}", file=sys.stderr)
+        return 3
 
     # Gate bloqueante: nada avanca sem passar no teste de originalidade.
     transcripts_path = out_dir / "transcripts.json"
@@ -285,6 +295,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--language", default="pt-BR")
     s.add_argument("--duration", type=float, default=None, help="minutos")
     s.add_argument("--dossier", default=None, help="Arquivo de fatos verificados")
+    s.add_argument("--profile", default=None, help=f"Perfil de nicho: {', '.join(profiles.available()) or 'nenhum'}")
     s.set_defaults(func=cmd_script)
 
     vi = sub.add_parser("visuals", help="Gera prompts de imagem consistentes")
@@ -308,6 +319,7 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--language", default="pt-BR")
     f.add_argument("--duration", type=float, default=None)
     f.add_argument("--dossier", default=None)
+    f.add_argument("--profile", default=None)
     f.add_argument("--sample-size", type=int, default=12)
     f.add_argument("--languages", nargs="*", default=["pt", "pt-BR", "en"])
     f.add_argument("--aspect-ratio", default="16:9")

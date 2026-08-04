@@ -1,0 +1,69 @@
+name: narrativa-biblica
+description: >
+  Narrativa biblica e historia das religioes em formato faceless. Publico que
+  conhece o material de origem e verifica citacao errada nos comentarios.
+
+# Gate duro: sem dossie, a Stage 4 se recusa a gerar.
+requires_dossier: true
+dossier_rationale: >
+  Referencia biblica inventada (capitulo/versiculo que nao existe, ou que existe
+  e diz outra coisa) e o modo de falha caracteristico de LLM neste nicho. O
+  publico corrige nos comentarios, e a correcao vira o comentario fixado por
+  engajamento. Um episodio derruba a autoridade que o canal levou meses
+  construindo.
+
+forbidden_claims:
+  - Citacao de capitulo e versiculo especificos
+  - Traducao ou sentido de termo em hebraico, aramaico ou grego
+  - Datacao de evento, autoria ou composicao de livro
+  - Achado arqueologico, escavacao ou artefato
+  - Numero (anos, distancias, populacoes, quantidades)
+  - Consenso academico ou posicao de estudioso nomeado
+  - Detalhe historico de contexto (governante, guerra, costume, moeda)
+
+content_rules:
+  - >
+    Distinga sempre tres registros e nunca os funda: o que o texto DIZ, o que a
+    tradicao INTERPRETA, e o que a historiografia DOCUMENTA. Fundir os tres e o
+    erro que gera acusacao de desonestidade.
+  - >
+    Onde ha divergencia entre tradicoes ou entre escolas academicas, apresente a
+    divergencia. Nao escolha um lado e narre como se fosse consenso.
+  - >
+    Registro narrativo e informativo. Nao pregue, nao converta, nao ataque
+    nenhuma tradicao religiosa, nao afirme superioridade de uma fe sobre outra.
+  - >
+    Nao atribua eventos contemporaneos a profecia, nem faca previsao sobre o
+    futuro a partir do texto.
+  - >
+    Sem sensacionalismo do tipo "a igreja escondeu" ou "o que nao te contaram" —
+    alem de degradar a credibilidade, e o padrao que o YouTube associa a
+    conteudo de baixa qualidade neste nicho.
+
+voice_hint: >
+  Voz grave, ritmo pausado, tom de quem narra algo antigo e serio. Sem urgencia
+  comercial, sem entonacao de anuncio. A mesma voz em todos os videos.
+
+visual_hint: >
+  Estetica cinematografica de periodo antigo. Luz lateral quente, textura de
+  pedra, tecido e pergaminho, paleta terrosa dessaturada. Figuras humanas de
+  longe, de costas ou em silhueta — evita tanto o vale da estranheza quanto a
+  representacao de figura sagrada especifica, que ofende parte do publico.
+
+recommended_languages:
+  - en
+  - pt-BR
+
+monetization_notes:
+  - >
+    Ingles paga mais por mil visualizacoes, mas a vertical religiosa em ingles e
+    das mais saturadas de conteudo faceless gerado por IA — o que significa
+    concorrencia alta E escrutinio maior da plataforma sobre o nicho.
+  - >
+    A politica de conteudo inautentico do YouTube mira producao em massa
+    repetitiva. Volume sem diferenciacao e o padrao que ela detecta, e este
+    nicho e um dos mais visados.
+  - >
+    Anunciante trata religiao como categoria sensivel: a receita por mil
+    visualizacoes costuma ficar abaixo da media do idioma, mesmo com boa
+    retencao. Verifique o CPM real do canal modelo antes de projetar receita.

@@ -7,11 +7,16 @@ import logging
 
 from engine.intelligence.youtube_cloner import prompts
 from engine.intelligence.youtube_cloner.llm import call_json
+from engine.intelligence.youtube_cloner.profiles import NicheProfile
 from engine.intelligence.youtube_cloner.schemas import Scene, ScriptDraft, VideoDNA
 
 logger = logging.getLogger("youtube_cloner.script")
 
 SECONDS_PER_SCENE = 10
+
+
+class DossierRequired(RuntimeError):
+    """O perfil de nicho exige dossie de pesquisa e ele nao foi fornecido."""
 
 
 def _dna_summary(dna: VideoDNA) -> str:
@@ -40,9 +45,17 @@ def generate_script(
     language: str = "pt-BR",
     duration_minutes: float | None = None,
     dossier: list[str] | None = None,
+    profile: NicheProfile | None = None,
     provider: str | None = None,
 ) -> ScriptDraft:
     """DNA + tema -> ScriptDraft com cenas ja fatiadas."""
+    if profile and profile.requires_dossier and not dossier:
+        raise DossierRequired(
+            f"O perfil '{profile.name}' exige dossie de pesquisa. "
+            f"{profile.dossier_rationale.strip()} "
+            "Passe --dossier <arquivo> com os fatos verificados."
+        )
+
     duration = duration_minutes or dna.target_duration_minutes
     wpm = dna.words_per_minute or 150
     target_words = int(duration * wpm)
@@ -53,6 +66,9 @@ def generate_script(
         if dossier
         else prompts.DOSSIER_MISSING
     )
+
+    if profile:
+        dossier_block = f"{profile.prompt_block()}\n\n{dossier_block}"
 
     prompt = prompts.SCRIPT_GENERATION.format(
         dna=_dna_summary(dna),
