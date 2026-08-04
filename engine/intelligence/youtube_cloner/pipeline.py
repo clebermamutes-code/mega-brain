@@ -105,12 +105,30 @@ def cmd_discover(args: argparse.Namespace) -> int:
 
 def cmd_dna(args: argparse.Namespace) -> int:
     out_dir = project_dir(args.slug)
-    channel_id = discovery.resolve_channel_id(args.channel)
-    model = discovery.build_channel_model(channel_id, sample_size=args.sample_size)
-    write_artifact(model, out_dir / "channel-model.json")
-    print(f"Canal: {model.title} ({len(model.top_videos)} videos na amostra)")
 
-    ids = [v.video_id for v in model.top_videos]
+    if getattr(args, "videos", None):
+        # Amostra curada a mao: dispensa a YouTube Data API por completo, o que
+        # tambem torna este caminho utilizavel sem YOUTUBE_API_KEY.
+        listing = Path(args.videos)
+        if not listing.exists():
+            print(f"Lista de videos nao encontrada: {listing}", file=sys.stderr)
+            return 1
+        ids = transcripts_stage.parse_video_ids(listing.read_text(encoding="utf-8"))
+        if not ids:
+            print(f"Nenhum video_id reconhecido em {listing}", file=sys.stderr)
+            return 1
+        channel_id = args.channel or "curated-sample"
+        print(f"Amostra curada: {len(ids)} videos de {listing}")
+    else:
+        if not args.channel:
+            print("Informe --channel ou --videos.", file=sys.stderr)
+            return 1
+        channel_id = discovery.resolve_channel_id(args.channel)
+        model = discovery.build_channel_model(channel_id, sample_size=args.sample_size)
+        write_artifact(model, out_dir / "channel-model.json")
+        print(f"Canal: {model.title} ({len(model.top_videos)} videos na amostra)")
+        ids = [v.video_id for v in model.top_videos]
+
     texts = transcripts_stage.fetch_many(ids, languages=args.languages)
     transcripts_stage.save(texts, out_dir / "transcripts.json")
     print(f"Transcricoes obtidas: {len(texts)}/{len(ids)}")
@@ -284,7 +302,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     n = sub.add_parser("dna", help="Extrai o DNA estrutural de um canal")
     add_common(n)
-    n.add_argument("--channel", required=True, help="URL, @handle ou UC...")
+    n.add_argument("--channel", default=None, help="URL, @handle ou UC... (exige YOUTUBE_API_KEY)")
+    n.add_argument("--videos", default=None, help="Arquivo com URLs de video, uma por linha (dispensa a API)")
     n.add_argument("--sample-size", type=int, default=12)
     n.add_argument("--languages", nargs="*", default=["pt", "pt-BR", "en"])
     n.set_defaults(func=cmd_dna)
@@ -314,7 +333,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     f = sub.add_parser("full", help="dna -> script -> visuals -> voice -> assemble")
     add_common(f)
-    f.add_argument("--channel", required=True)
+    f.add_argument("--channel", default=None)
+    f.add_argument("--videos", default=None)
     f.add_argument("--topic", required=True)
     f.add_argument("--language", default="pt-BR")
     f.add_argument("--duration", type=float, default=None)

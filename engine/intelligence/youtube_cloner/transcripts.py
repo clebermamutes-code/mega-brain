@@ -32,16 +32,27 @@ class TranscriptUnavailable(RuntimeError):
 
 
 def _via_api(video_id: str, languages: list[str]) -> str | None:
+    """Suporta as duas APIs da lib.
+
+    A v1.x trocou o classmethod ``get_transcript`` por ``YouTubeTranscriptApi().fetch``,
+    que devolve objetos com atributo ``.text`` em vez de dicts. Tentamos a nova
+    primeiro e caimos para a antiga, porque nao controlamos qual versao o
+    operador tem instalada.
+    """
     try:
         from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
     except ImportError:
         return None
+
     try:
+        if hasattr(YouTubeTranscriptApi, "fetch"):  # v1.x
+            snippets = YouTubeTranscriptApi().fetch(video_id, languages=languages)
+            return " ".join(s.text.strip() for s in snippets if getattr(s, "text", ""))
         chunks = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
+        return " ".join(c.get("text", "").strip() for c in chunks if c.get("text"))
     except Exception as exc:  # a lib levanta ~8 excecoes distintas
         logger.debug("youtube_transcript_api falhou para %s: %s", video_id, exc)
         return None
-    return " ".join(c.get("text", "").strip() for c in chunks if c.get("text"))
 
 
 def _vtt_to_text(vtt: str) -> str:
@@ -117,6 +128,34 @@ def fetch_many(
             "Nenhum video da amostra tinha transcricao acessivel."
         )
     return out
+
+
+_VIDEO_ID = re.compile(r"(?:v=|youtu\.be/|/shorts/|/embed/)([\w-]{11})")
+
+
+def parse_video_ids(text: str) -> list[str]:
+    """Extrai video_ids de uma lista de URLs (uma por linha).
+
+    Tolera parametros de tracking colados na URL (``&pp=...``, ``?si=...``),
+    ignora linhas vazias e comentarios com ``#``, e remove duplicatas
+    preservando a ordem original.
+    """
+    ids: list[str] = []
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        match = _VIDEO_ID.search(line)
+        if match:
+            candidate = match.group(1)
+        elif re.fullmatch(r"[\w-]{11}", line):
+            candidate = line  # id cru, sem URL
+        else:
+            logger.warning("Linha ignorada (sem video_id reconhecivel): %s", line[:60])
+            continue
+        if candidate not in ids:
+            ids.append(candidate)
+    return ids
 
 
 def save(transcripts: dict[str, str], path: Path) -> Path:

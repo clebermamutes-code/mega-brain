@@ -132,6 +132,48 @@ def test_duration_parser() -> None:
     check("invalido = 0", parse_iso_duration("banana") == 0)
 
 
+def test_video_id_parser() -> None:
+    from engine.intelligence.youtube_cloner.transcripts import parse_video_ids
+
+    check(
+        "URL padrao",
+        parse_video_ids("https://www.youtube.com/watch?v=y1Nt7ZTwya0") == ["y1Nt7ZTwya0"],
+    )
+    check(
+        "parametro de tracking &pp= e descartado",
+        parse_video_ids("https://www.youtube.com/watch?v=ePHtuxHVANg&pp=0gcJCaML")
+        == ["ePHtuxHVANg"],
+    )
+    check(
+        "youtu.be com ?si=",
+        parse_video_ids("https://youtu.be/j2NbfGGIw-k?si=abc") == ["j2NbfGGIw-k"],
+    )
+    check("id cru sem URL", parse_video_ids("y1Nt7ZTwya0") == ["y1Nt7ZTwya0"])
+    check(
+        "duplicata removida preservando ordem",
+        parse_video_ids(
+            "https://youtu.be/aaaaaaaaaaa\nhttps://youtu.be/bbbbbbbbbbb\nhttps://youtu.be/aaaaaaaaaaa"
+        )
+        == ["aaaaaaaaaaa", "bbbbbbbbbbb"],
+    )
+    check("comentario ignorado", parse_video_ids("# nota\n") == [])
+    check("linha invalida nao quebra", parse_video_ids("lixo aqui") == [])
+
+
+def test_sample_file() -> None:
+    from pathlib import Path
+
+    from engine.intelligence.youtube_cloner.transcripts import parse_video_ids
+
+    sample = Path(__file__).parent.parent / "samples" / "olivrosagrado.txt"
+    if not sample.exists():
+        check("amostra olivrosagrado presente", False, "(arquivo ausente)")
+        return
+    ids = parse_video_ids(sample.read_text(encoding="utf-8"))
+    check("amostra tem 27 videos", len(ids) == 27, f"(achou {len(ids)})")
+    check("amostra sem duplicatas", len(set(ids)) == len(ids))
+
+
 def main() -> int:
     print("\n== guardrails ==")
     test_identical_text_fails()
@@ -143,6 +185,9 @@ def main() -> int:
     print("\n== discovery ==")
     test_filters()
     test_duration_parser()
+    print("\n== parser de video_id ==")
+    test_video_id_parser()
+    test_sample_file()
     print()
     if FAILURES:
         print(f"{len(FAILURES)} teste(s) falharam: {FAILURES}")
