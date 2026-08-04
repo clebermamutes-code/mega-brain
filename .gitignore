@@ -72,3 +72,12 @@ Thumbs.db
 *.bak
 *.tmp
 *_BACKUP_*
+
+# Saidas do pipeline youtube_cloner (roteiros, audio, assets, renders)
+artifacts/youtube-cloner/
+
+# Estado de sessao gerado pelos hooks (nao e produto)
+.claude/logs/
+.claude/sessions/
+.claude/mission-control/
+.claude/jarvis/STATE.json
