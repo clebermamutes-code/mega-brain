@@ -501,5 +501,16 @@
       "corroborate": 12,
       "contradict": -12
     }
+  },
+  "extraKnownMarketplaces": {
+    "hyperframes": {
+      "source": {
+        "source": "github",
+        "repo": "heygen-com/hyperframes"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "hyperframes@hyperframes": true
   }
 }
