@@ -44,15 +44,14 @@ fi
 
 # Only check git push commands
 if echo "$COMMAND" | grep -qiE '\bgit\s+push\b'; then
-  # Accept either MEGABRAIN_ACTIVE_AGENT (legacy) or MEGABRAIN_ACTIVE_AGENT (canonical after framework rename).
   # Accepted values: devops | github-devops | megabrain-devops (any squad's devops short name).
-  ACTIVE_AGENT="${MEGABRAIN_ACTIVE_AGENT:-${MEGABRAIN_ACTIVE_AGENT:-}}"
+  ACTIVE_AGENT="${MEGABRAIN_ACTIVE_AGENT:-}"
   case "$ACTIVE_AGENT" in
     devops|github-devops|megabrain-devops) exit 0 ;;
   esac
 
-  # Also accept inline env var set on the command itself (either prefix, accepted values above).
-  if echo "$COMMAND" | grep -qiE '(Mega Brain|Mega Brain)_ACTIVE_AGENT=(devops|github-devops|megabrain-devops)'; then
+  # Also accept the env var set inline on the command itself.
+  if echo "$COMMAND" | grep -qE 'MEGABRAIN_ACTIVE_AGENT=(devops|github-devops|megabrain-devops)\b'; then
     exit 0
   fi
 

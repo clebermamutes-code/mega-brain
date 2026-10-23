@@ -1,0 +1,38 @@
+# Amostra curada do canal O Livro Sagrado (@OlivrosagradoYT)
+# 27 videos fornecidos pelo operador em 2026-08-04.
+#
+# Uso:
+#   python3 -m engine.intelligence.youtube_cloner.pipeline dna \
+#     --slug livro-sagrado --videos engine/intelligence/youtube_cloner/samples/olivrosagrado.txt
+#
+# Este caminho dispensa a YOUTUBE_API_KEY: a amostra ja esta escolhida, entao
+# nao ha descoberta nem filtragem a fazer. Requer apenas transcricao acessivel
+# (youtube-transcript-api ou yt-dlp) e uma chave de LLM.
+
+https://www.youtube.com/watch?v=y1Nt7ZTwya0
+https://www.youtube.com/watch?v=iRhzXsH5luY
+https://www.youtube.com/watch?v=qp0ZJKvU0iI
+https://www.youtube.com/watch?v=LveK8cQ9SBI
+https://www.youtube.com/watch?v=ICLuzEMzCVM
+https://www.youtube.com/watch?v=pCO-nrHhWgo
+https://www.youtube.com/watch?v=Z3CpfXs1_Cw
+https://www.youtube.com/watch?v=tzPIkehvhaU
+https://www.youtube.com/watch?v=wOO_xC4RmUw
+https://www.youtube.com/watch?v=1bmM-tHZXKg
+https://www.youtube.com/watch?v=ePHtuxHVANg
+https://www.youtube.com/watch?v=7s6K7pkch64
+https://www.youtube.com/watch?v=CkxbiNrjXYw
+https://www.youtube.com/watch?v=ArwWTMHYpjA
+https://www.youtube.com/watch?v=wzFCJkRKKJI
+https://www.youtube.com/watch?v=j2NbfGGIw-k
+https://www.youtube.com/watch?v=8ocIps5cDtA
+https://www.youtube.com/watch?v=5kVtgZZED6o
+https://www.youtube.com/watch?v=PvvnHMMOhMs
+https://www.youtube.com/watch?v=ZS9MhGAbYgo
+https://www.youtube.com/watch?v=po3UBr_KkSU
+https://www.youtube.com/watch?v=ax9Utbao0ag
+https://www.youtube.com/watch?v=tMyYpZQ5Yo0
+https://www.youtube.com/watch?v=vhkKOihXM_U
+https://www.youtube.com/watch?v=dEWV0GIIF-w
+https://www.youtube.com/watch?v=zu8v211Jdi0
+https://www.youtube.com/watch?v=TxqomjzAp24
